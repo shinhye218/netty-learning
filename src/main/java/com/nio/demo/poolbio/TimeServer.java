@@ -1,4 +1,6 @@
-package com.nio.demo.bio;
+package com.nio.demo.poolbio;
+
+import com.nio.demo.bio.TimeServerHandler;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -24,10 +26,10 @@ public class TimeServer {
             server = new ServerSocket(port);
             System.out.println("The time server is start in port : " + port);
             Socket socket;
+            TimeServerHandlerExecutePool executePool = new TimeServerHandlerExecutePool(50, 10000);
             while (true) {
                 socket = server.accept();
-                System.out.println("---");
-                new Thread(new TimeServerHandler(socket)).start();
+                executePool.execute(new TimeServerHandler(socket));
             }
         } finally {
             if (server != null) {
